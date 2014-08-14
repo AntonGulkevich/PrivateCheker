@@ -17,10 +17,12 @@ This private cheker help you to validate e-mail in huge ammount
 ## Requirements
 
 ## Features_completed
+
 * validation af data base(scaning for errors)
 * forced mode (help u to open base skippig errors)
 
-## Features_to_do##
+## Features_to_do
+
 * authentication email
 * searching in valid email
 * supporting proxy
@@ -29,6 +31,7 @@ This private cheker help you to validate e-mail in huge ammount
 ##Issues
 
 ## Help
+
 1. Open data base
 2. Choose domains
 3. Check

@@ -16,6 +16,10 @@ This private cheker help you to validate e-mail in huge ammount
 
 ## Requirements
 
+* Qt 5.3.1 (MSVC 2010)
+* Qt Creator 3.1.2 (opensource)
+* minGW
+
 ## Features completed
 
 * validation af data base(scaning for errors)

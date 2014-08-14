@@ -7,7 +7,7 @@ Cheker::Cheker(QWidget *parent) :
 {
     ui->setupUi(this);
     //connect(ui->ProgressBar, SIGNAL(valueChanged(int)), ui->GoodLCD, SLOT(display(int)));
-    //connect(ui->ma)
+    connect(ui->actionOpen_Base, SIGNAL(triggered() ), ui->OpenBaseButton, SLOT(click()));
 
 }
 
@@ -84,7 +84,7 @@ int Cheker::ValidationDataBase(QStringList DataBaseText){
 }
 //--------------------------------------------------------------------------------------------------------------------
 
-void Cheker::FillVector(QString _name){
+void Cheker::FillVector(const QString &_name){
     ui->MainProcessLable->setText("Parsing base");
     QStringList DataBaseList=_name.split("\n");
     QString TempStr;

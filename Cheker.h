@@ -49,7 +49,7 @@ private:
 
     //functions
     QString OpenFile();
-    void FillVector(QString _name);//fill existing vector of accounts
+    void FillVector(const QString &_name);//fill existing vector of accounts
     int ValidationDataBase(QStringList DataBaseText);// chek data base to be "login:password" like, returns count of errors
     bool MixCheck();//cheking base for different domains existance
     int ForcedFillVector(QString _name);//trying to fill vector if there are errors in database, returns number of errors

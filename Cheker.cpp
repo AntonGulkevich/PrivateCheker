@@ -8,7 +8,6 @@ Cheker::Cheker(QWidget *parent) :
     ui->setupUi(this);
     //connect(ui->ProgressBar, SIGNAL(valueChanged(int)), ui->GoodLCD, SLOT(display(int)));
     connect(ui->actionOpen_Base, SIGNAL(triggered() ), ui->OpenBaseButton, SLOT(click()));
-
 }
 
 Cheker::~Cheker()
@@ -55,7 +54,7 @@ void Cheker::on_OpenBaseButton_clicked(){
     }
     else{
         if (Errors>0){
-            ui->statusBar->showMessage("Errors: " +QString::number(Errors)+". Data Base not valid. Need: LoginDelimiterPassword. Exapmle: Ivan@yandex.ru:12345");
+            ui->statusBar->showMessage("Errors: " +QString::number(Errors)+". Data Base not valid. Need: LoginDelimiterPassword. Exapmle: Alehka@yandex.ru:superdeer");
             return;
         }
         FillVector(DataBaseData);
@@ -87,7 +86,8 @@ int Cheker::ValidationDataBase(QStringList DataBaseText){
 void Cheker::FillVector(const QString &_name){
     ui->MainProcessLable->setText("Parsing base");
     QStringList DataBaseList=_name.split("\n");
-    QString TempStr;
+    QString TempStr, dlm;
+    dlm=ui->DilimiterSetLineEdit->text();
     ui->ProgressBar->setValue(0);
     ui->ProgressBar->setMaximum(DataBaseList.count());
     int cur=0;
@@ -97,21 +97,24 @@ void Cheker::FillVector(const QString &_name){
         ui->CurrentProcess->setText(TempStr);
         ui->ProgressBar->setValue(cur++);
         if (TempStr=="") continue;
-        Account TempAcc(TempStr.split(ui->DilimiterSetLineEdit->text())[0],
-                TempStr.split(ui->DilimiterSetLineEdit->text())[1]);
+        Account TempAcc(TempStr.split(dlm)[0],
+                TempStr.split(dlm)[1]);
         DataBaseVector.push_back(TempAcc);
     }
 }
 //--------------------------------------------------------------------------------------------------------------------
 int Cheker::ForcedFillVector(QString _name){
     ui->MainProcessLable->setText("Parsing base in forced mode");
+
     QStringList DataBaseList=_name.split("\n");
-    QString TempStr;
-    QRegExp account ("[^"+ ui->DilimiterSetLineEdit->text() +"]*["+ ui->DilimiterSetLineEdit->text() +"]{1}.*");
+    QString TempStr, dlm;
+    dlm=ui->DilimiterSetLineEdit->text();
+    QRegExp account ("[^"+ dlm +"]*["+ dlm +"]{1}.*");
     int warnings=0;
     int cur=0;
     ui->ProgressBar->setValue(cur);
     ui->ProgressBar->setMaximum(DataBaseList.count());
+
 
     while(!DataBaseList.isEmpty()){
         TempStr=DataBaseList.takeFirst();
@@ -122,8 +125,8 @@ int Cheker::ForcedFillVector(QString _name){
             warnings++;
             continue;
         }
-        Account TempAcc(TempStr.split(ui->DilimiterSetLineEdit->text())[0],
-                TempStr.split(ui->DilimiterSetLineEdit->text())[1]);
+        Account TempAcc(TempStr.split(dlm)[0],
+                TempStr.split(dlm)[1]);
         DataBaseVector.push_back(TempAcc);
 
         ui->CurrentProcess->setText(TempStr);
@@ -146,10 +149,11 @@ void Cheker::on_CheckButton_clicked()
     QStringList domains;
     QVector <SortedBase> AccountsToCheck;
     int AccCount=0, cur=0, good=0, bad=0, total=0;
-
+    int row=0, col=0;
 
     EnabledDomains(domains);
     AccountsToCheck=CreateSortedBase(DataBaseVector, domains);//create vector of structures with enabled domains
+
     for (QVector<Cheker::SortedBase>::iterator it=AccountsToCheck.begin(); it!=AccountsToCheck.end(); ++it){
         AccCount+=it->accounts.count();
     }
@@ -172,6 +176,17 @@ void Cheker::on_CheckButton_clicked()
             ui->TotalLCD->display(QString::number(total));
         }
     }
+    ui->ValidEmailsTable->setRowCount(good);
+
+    for (QVector<Cheker::SortedBase>::iterator it=AccountsToCheck.begin(); it!=AccountsToCheck.end(); ++it){
+        for (QVector <Account>::iterator it2=it->accounts.begin(); it2!=it->accounts.end();++it2){
+            if (it2->GetValid()){
+                ui->ValidEmailsTable->setItem(row,col++, new QTableWidgetItem(it2->GetLogin()));
+                ui->ValidEmailsTable->setItem(row++,col--, new QTableWidgetItem(it2->GetPassword()));
+            }
+        }
+    }
+
     SetProgressGUI("Done", "", 100, 0);
 }
 //--------------------------------------------------------------------------------------------------------------------

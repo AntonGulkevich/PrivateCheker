@@ -7,7 +7,7 @@ Cheker::Cheker(QWidget *parent) :
 {
     ui->setupUi(this);
     //connect(ui->ProgressBar, SIGNAL(valueChanged(int)), ui->GoodLCD, SLOT(display(int)));
-    connect(ui->ma)
+    //connect(ui->ma)
 
 }
 

@@ -9,19 +9,19 @@ This private cheker help you to validate e-mail in huge ammount
 
 * [Requirements](#requirements)
 * [Issues](#issues)
-* [Features_completed](#Features_completed)
-* [Features_to_do](#Features_to_do)
-* [Help](#Help)
+* [Features completed](#features completed)
+* [Features to do](#features to do)
+* [Help](#help)
 
 
 ## Requirements
 
-## Features_completed
+## Features completed
 
 * validation af data base(scaning for errors)
 * forced mode (help u to open base skippig errors)
 
-## Features_to_do
+## Features to do
 
 * authentication email
 * searching in valid email

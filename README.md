@@ -1,7 +1,10 @@
 #Private Cheker#
--
+*****
 
-This private cheker help you to validate e-mail in huge ammount
+This private cheker helps you to validate e-mail in huge ammount
+In non distant future will created functions, that allow u to search 
+text in e-mail, using pop3.
+*****
 
 ![Image of PrivateCheker](https://github.com/AntonGulkevich/PrivateCheker/blob/master/Images/MainWindow.PNG "private cheker-qt")
 

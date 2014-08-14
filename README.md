@@ -26,6 +26,8 @@ This private cheker help you to validate e-mail in huge ammount
 * supporting proxy
 * supporting threads
 
+##Issues
+
 ## Help
 1. Open data base
 2. Choose domains

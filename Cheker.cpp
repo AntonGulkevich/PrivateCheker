@@ -1,13 +1,19 @@
 #include "cheker.h"
 #include "ui_cheker.h"
+#include "pop3client.h"
 
 Cheker::Cheker(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Cheker)
 {
     ui->setupUi(this);
+    // ui->ListToSearchCB->addItem();
     //connect(ui->ProgressBar, SIGNAL(valueChanged(int)), ui->GoodLCD, SLOT(display(int)));
     connect(ui->actionOpen_Base, SIGNAL(triggered() ), ui->OpenBaseButton, SLOT(click()));
+    connect(ui->testButton, SIGNAL(clicked()),SLOT(on_testButton_clicked()));
+    connect(ui->AddButton, SIGNAL(clicked()), SLOT(on_add_button_clicked()));
+    connect(ui->DelButton, SIGNAL(clicked()), SLOT(on_dell_button_clicked()));
+    connect(ui->SerchButton, SIGNAL(clicked()), SLOT(on_search_button_clicked()));
 }
 
 Cheker::~Cheker()
@@ -137,7 +143,7 @@ int Cheker::ForcedFillVector(QString _name){
 
 //--------------------------------------------------------------------------------------------------------------------
 bool Cheker::CheckEmail(const QString &_login,const QString _password){
-    if(_login.count()<14)
+    if(true)
         return true;
     else
         return false;
@@ -316,8 +322,67 @@ void Cheker:: CreateDefaultStructure(QVector <Cheker::SortedBase> & vect,const  
 }
 
 //--------------------------------------------------------------------------------------------------------------------
+void  Cheker::on_testButton_clicked(){
+    ui->statusBar->showMessage("Validation test");
+    QString login="ycykensmit@gmail.com";                 //example "testvalidation@mail.ru";
+    QString pass="222091Anton";                           //example  "09Hj3d5hd1";
+    QString host="pop.googlemail.com";
+    qint16 port=995;
+
+    if(!QSslSocket::supportsSsl()) {
+        QMessageBox::critical(0, QMessageBox::tr("Cheker"), QMessageBox::tr("I couldn't detect any SSL supporton this system."));
+        return;
+    }
+
+    POP3Client client(login,pass,host, port );
+
+    if (client.init()) {
+        if (client.login()) {
+            //  client.quit();
+        } else {
+            QMessageBox::critical(0, "Error", "Wrong Password");
+        }
+    } else {
+        QMessageBox::critical(0, "Error", "No connection to POP3 server!");
+    }
+}
 //--------------------------------------------------------------------------------------------------------------------
+void Cheker::on_add_button_clicked(){
+    QString name;
+    QWidget *newTab;
+
+
+    if(ui->ListToSearchCB->count()>0){
+        int index;
+        index=ui->ListToSearchCB->findText(ui->TextSearchLE->text());
+        if(index>-1){
+            return;
+        }
+    }
+    name=ui->TextSearchLE->text();
+    ui->ListToSearchCB->addItem(name);
+    newTab= new QWidget(ui->TabSearchRes);
+    ui->TabSearchRes->addTab(newTab,name);
+}
+
 //--------------------------------------------------------------------------------------------------------------------
+void Cheker::on_dell_button_clicked(){
+    int index;
+    if (ui->ListToSearchCB->count()>0){
+        index=ui->ListToSearchCB->findText(ui->TextSearchLE->text());
+        if(index>-1){
+            ui->ListToSearchCB->removeItem(index);
+            ui->TabSearchRes->removeTab(index);
+        }
+    }
+}
+//--------------------------------------------------------------------------------------------------------------------
+void Cheker::on_search_button_clicked(){
+
+   /* ui->statusBar->showMessage("test");
+    ui->ValidEmailsTable->item(0, 0)->setBackground(Qt::red);*/
+}
+
 //--------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------

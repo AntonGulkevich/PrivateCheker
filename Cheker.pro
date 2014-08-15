@@ -15,12 +15,13 @@ TEMPLATE = app
 SOURCES += \
     Account.cpp \
     Cheker.cpp \
-    Main.cpp
+    Main.cpp \
+    pop3client.cpp
 
 HEADERS  += \
     Account.h \
-    Cheker.h
+    Cheker.h \
+    pop3client.h
 
 FORMS    += \
-    Process.ui \
     Cheker.ui

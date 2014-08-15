@@ -2,18 +2,23 @@
 #define CHEKER_H
 
 #include <QMainWindow>
-
-#include<qfiledialog.h>
-#include <QDir>
 #include <QFile>
-#include <QMessageBox>
-#include <QVector>
-#include <QStringList>
-#include <QRegExp>
 #include <qnetwork.h>
 #include <QtNetwork/QTcpSocket>
 #include <QStandardPaths>
 #include <QTime>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QDir>
+#include <QVector>
+#include <QStringList>
+#include <QRegExp>
+#include <QMessageBox>
+#include <qfiledialog.h>
+#include <QSslSocket>
 
 #include "account.h"
 
@@ -29,12 +34,20 @@ public:
     explicit Cheker(QWidget *parent = 0);
     ~Cheker();
 
-private slots:
+private Q_SLOTS:
     void on_OpenBaseButton_clicked();
 
     void on_CheckButton_clicked();
 
     void on_CloseBaseButton_clicked();
+
+    void on_testButton_clicked();
+
+    void on_dell_button_clicked();
+
+    void on_add_button_clicked();
+
+    void on_search_button_clicked();
 
 private:
     Ui::Cheker *ui;
@@ -44,8 +57,14 @@ private:
         QVector <Account> accounts;
 
     };
+    struct Credentials {
+        QString user;
+        QString pass;
+    };
     //vars
-    QVector <Account> DataBaseVector;    
+    QVector <Account> DataBaseVector;
+
+
 
     //functions
     QString OpenFile();

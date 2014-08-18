@@ -34,6 +34,7 @@ text in e-mail, using pop3.
 * searching in valid email
 * supporting proxy
 * supporting threads
+* change style
 
 ##Issues
 

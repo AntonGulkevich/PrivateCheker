@@ -63,7 +63,8 @@ private:
     };
     //vars
     QVector <Account> DataBaseVector;
-
+    QSslSocket *socket_;
+    int timeout_;
 
 
     //functions
@@ -78,6 +79,7 @@ private:
     void SetProgressGUI(QString main_process, QString sub_process, int ProgressBarMaximum,int  StartValue);//setup giu due to current process
     QVector <SortedBase> CreateSortedBase(QVector <Account> vect,const QStringList &domains);
     void CreateDefaultStructure(QVector <Cheker::SortedBase> & vect,const QStringList &domains);
+    bool readResponse(QString& response, quint64 bytesAvailable);
 
 };
 #endif // CHEKER_H

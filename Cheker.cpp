@@ -322,31 +322,6 @@ void Cheker:: CreateDefaultStructure(QVector <Cheker::SortedBase> & vect,const  
 }
 
 //--------------------------------------------------------------------------------------------------------------------
-void  Cheker::on_testButton_clicked(){
-    ui->statusBar->showMessage("Validation test");
-    QString login="ycykensmit@gmail.com";                 //example "testvalidation@mail.ru";
-    QString pass="222091Anton";                           //example  "09Hj3d5hd1";
-    QString host="pop.googlemail.com";
-    qint16 port=995;
-
-    if(!QSslSocket::supportsSsl()) {
-        QMessageBox::critical(0, QMessageBox::tr("Cheker"), QMessageBox::tr("I couldn't detect any SSL supporton this system."));
-        return;
-    }
-
-    POP3Client client(login,pass,host, port );
-
-    if (client.init()) {
-        if (client.login()) {
-            //  client.quit();
-        } else {
-            QMessageBox::critical(0, "Error", "Wrong Password");
-        }
-    } else {
-        QMessageBox::critical(0, "Error", "No connection to POP3 server!");
-    }
-}
-//--------------------------------------------------------------------------------------------------------------------
 void Cheker::on_add_button_clicked(){
     QString name;
     QWidget *newTab;
@@ -384,6 +359,53 @@ void Cheker::on_search_button_clicked(){
 }
 
 //--------------------------------------------------------------------------------------------------------------------
+bool Cheker::readResponse(QString& response, quint64 bytesAvailable) {
+
+    bool complete = false;
+    bool couldRead = socket_->waitForReadyRead(30000);
+    qDebug() << "available: " << socket_->bytesAvailable();
+
+    quint64 bytesRead = 0;
+
+    do {
+        QByteArray all(socket_->readAll());
+        bytesRead += all.size();
+        response.append(all);
+        if (bytesRead < bytesAvailable) socket_->waitForReadyRead(100);
+    } while (bytesRead < bytesAvailable);
+
+    if (response.size() > 0) {
+        complete = true;
+    }
+
+    return couldRead && complete;
+}
 //--------------------------------------------------------------------------------------------------------------------
+void  Cheker::on_testButton_clicked(){
+    ui->statusBar->showMessage("Validation test");
+    QString login="ycykensmit@gmail.com";                 //example "testvalidation@mail.ru";
+    QString pass="222091Anton";                           //example  "09Hj3d5hd1";
+    QString host="pop.googlemail.com";
+    qint16 port=995;
+
+    if(!QSslSocket::supportsSsl()) {
+        QMessageBox::critical(0, QMessageBox::tr("Cheker"), QMessageBox::tr("I couldn't detect any SSL supporton this system."));
+        return;
+    }
+
+    socket_ = new QSslSocket(this);
+
+    socket_->connectToHostEncrypted(host, port);
+
+    if (!socket_->waitForConnected(30000)) {
+        qDebug() << socket_->errorString();
+        return;
+    }
+
+    QString response;
+    readResponse(response,0);
+
+    ui->statusBar->showMessage(response);
+}
 //--------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------

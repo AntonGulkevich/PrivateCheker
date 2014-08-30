@@ -433,6 +433,7 @@ void Cheker::OnTabClicked(int index){
     QString text;
     text=ui->TabSearchRes->tabText(index);
     ui->TextSearchLE->setText(text);
+    /*commit*/
 }
 
 //--------------------------------------------------------------------------------------------------------------------

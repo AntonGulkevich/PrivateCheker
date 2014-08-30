@@ -14,6 +14,9 @@ Cheker::Cheker(QWidget *parent) :
     connect(ui->AddButton, SIGNAL(clicked()), SLOT(on_add_button_clicked()));
     connect(ui->DelButton, SIGNAL(clicked()), SLOT(on_dell_button_clicked()));
     connect(ui->SerchButton, SIGNAL(clicked()), SLOT(on_search_button_clicked()));
+    connect(ui->TabSearchRes, SIGNAL(currentChanged(int)), SLOT(OnTabClicked(int)));
+    connect(ui->ListToSearchCB, SIGNAL(currentIndexChanged(int)),ui->TabSearchRes, SLOT(setCurrentIndex(int)));
+
 }
 
 Cheker::~Cheker()
@@ -43,6 +46,7 @@ QString Cheker::OpenFile(){
 //--------------------------------------------------------------------------------------------------------------------
 
 void Cheker::on_OpenBaseButton_clicked(){
+    ui->ForcedModeCHB->setEnabled(false);
     ui->CloseBaseButton->click();
     bool ForcedMode = ui->ForcedModeCHB->isChecked();
     DataBaseVector.clear();
@@ -205,6 +209,8 @@ void Cheker::EnabledDomains(QStringList &List){
         List.append("@rambler.ru");
     if (ui->YandexCHB->isChecked())
         List.append("@yandex.ru");
+    if (ui->GmailCHB->isChecked())
+        List.append("@gmail.com");
 }
 //--------------------------------------------------------------------------------------------------------------------
 void Cheker::SetProgressGUI(QString main_process, QString sub_process, int ProgressBarMaximum, int StartValue){
@@ -221,6 +227,7 @@ void Cheker::SetEnabledDomains(){
     int yandex_count=0;
     int bk_count=0;
     int rambler_count=0;
+    int gmail_count=0;
     int other_count=0;
     SetProgressGUI("Looking for domains","domains...",DataBaseVector.count(), pr  );
     for (QVector <Account>::iterator it = DataBaseVector.begin() ; it != DataBaseVector.end(); ++it){
@@ -250,7 +257,14 @@ void Cheker::SetEnabledDomains(){
                             ui->BKCHB->setEnabled(true);
                     }
                     else{
-                        other_count++;
+                        if (tmp.contains("@gmail.com")){
+                            gmail_count++;
+                            if (!ui->GmailCHB->isEnabled())
+                                ui->GmailCHB->setEnabled(true);
+                        }
+                        else{
+                            other_count++;
+                        }
                     }
                 }
             }
@@ -261,6 +275,7 @@ void Cheker::SetEnabledDomains(){
     ui->ramblerCountLabel->setText(QString::number(rambler_count));
     ui->bkCountLabel->setText(QString::number(bk_count));
     ui->otherCountLabel->setText(QString::number(other_count));
+    ui->gmailCountLabel->setText(QString::number(gmail_count));
     SetProgressGUI("Done", "", 100,0);
 }
 //--------------------------------------------------------------------------------------------------------------------
@@ -271,17 +286,22 @@ void Cheker::on_CloseBaseButton_clicked()
     ui->MailRuCHB->setEnabled(false);
     ui->RamblerCHB->setEnabled(false);
     ui->BKCHB->setEnabled(false);
+    ui->GmailCHB->setEnabled(false);
+    ui->ForcedModeCHB->setEnabled(true);
 
     ui->YandexCHB->setChecked(false);
     ui->MailRuCHB->setChecked(false);
     ui->RamblerCHB->setChecked(false);
     ui->BKCHB->setChecked(false);
+    ui->GmailCHB->setChecked(false);
+
 
     ui->yandexCountLabel->setText("0");
     ui->mailCountLabel->setText("0");
     ui->ramblerCountLabel->setText("0");
     ui->bkCountLabel->setText("0");
     ui->otherCountLabel->setText("0");
+    ui->gmailCountLabel->setText("0");
 
     ui->statusBar->showMessage("Base closed");
     ui->MainProcessLable->setText("Ready");
@@ -326,18 +346,21 @@ void Cheker::on_add_button_clicked(){
     QString name;
     QWidget *newTab;
 
+    name=ui->TextSearchLE->text();
+    if (name=="")
+        return;
 
     if(ui->ListToSearchCB->count()>0){
         int index;
-        index=ui->ListToSearchCB->findText(ui->TextSearchLE->text());
+        index=ui->ListToSearchCB->findText(name);
         if(index>-1){
             return;
         }
     }
-    name=ui->TextSearchLE->text();
     ui->ListToSearchCB->addItem(name);
     newTab= new QWidget(ui->TabSearchRes);
     ui->TabSearchRes->addTab(newTab,name);
+    ui->TabSearchRes->setCurrentIndex(ui->TabSearchRes->count()-1);
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -350,38 +373,17 @@ void Cheker::on_dell_button_clicked(){
             ui->TabSearchRes->removeTab(index);
         }
     }
+    ui->TabSearchRes->setCurrentIndex(0);
 }
 //--------------------------------------------------------------------------------------------------------------------
 void Cheker::on_search_button_clicked(){
 
-   /* ui->statusBar->showMessage("test");
+    /* ui->statusBar->showMessage("test");
     ui->ValidEmailsTable->item(0, 0)->setBackground(Qt::red);*/
-}
-
-//--------------------------------------------------------------------------------------------------------------------
-bool Cheker::readResponse(QString& response, quint64 bytesAvailable) {
-
-    bool complete = false;
-    bool couldRead = socket_->waitForReadyRead(30000);
-    qDebug() << "available: " << socket_->bytesAvailable();
-
-    quint64 bytesRead = 0;
-
-    do {
-        QByteArray all(socket_->readAll());
-        bytesRead += all.size();
-        response.append(all);
-        if (bytesRead < bytesAvailable) socket_->waitForReadyRead(100);
-    } while (bytesRead < bytesAvailable);
-
-    if (response.size() > 0) {
-        complete = true;
-    }
-
-    return couldRead && complete;
 }
 //--------------------------------------------------------------------------------------------------------------------
 void  Cheker::on_testButton_clicked(){
+    QSslSocket *socket_;
     ui->statusBar->showMessage("Validation test");
     QString login="ycykensmit@gmail.com";                 //example "testvalidation@mail.ru";
     QString pass="222091Anton";                           //example  "09Hj3d5hd1";
@@ -397,15 +399,40 @@ void  Cheker::on_testButton_clicked(){
 
     socket_->connectToHostEncrypted(host, port);
 
-    if (!socket_->waitForConnected(30000)) {
+    if (!socket_->waitForConnected(100)) {
         qDebug() << socket_->errorString();
+        delete socket_;
         return;
     }
 
     QString response;
-    readResponse(response,0);
+    quint64 bytesRead;
+    quint64 bytesAvailable;
+    socket_->waitForReadyRead(100);
+
+    bytesRead=0;
+    bytesAvailable=socket_->bytesAvailable();
+
+    qDebug() << "available: " <<bytesAvailable ;
+
+    do {
+        QByteArray all(socket_->readAll());
+        bytesRead += all.size();
+        response.append(all);
+        if (bytesRead < bytesAvailable)
+            socket_->waitForReadyRead(100);
+    }
+    while (bytesRead < bytesAvailable);
 
     ui->statusBar->showMessage(response);
+
+    delete socket_;
 }
 //--------------------------------------------------------------------------------------------------------------------
+void Cheker::OnTabClicked(int index){
+    QString text;
+    text=ui->TabSearchRes->tabText(index);
+    ui->TextSearchLE->setText(text);
+}
+
 //--------------------------------------------------------------------------------------------------------------------

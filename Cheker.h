@@ -49,6 +49,8 @@ private Q_SLOTS:
 
     void on_search_button_clicked();
 
+    void OnTabClicked(int index);
+
 private:
     Ui::Cheker *ui;
     //structures
@@ -63,10 +65,6 @@ private:
     };
     //vars
     QVector <Account> DataBaseVector;
-    QSslSocket *socket_;
-    int timeout_;
-
-
     //functions
     QString OpenFile();
     void FillVector(const QString &_name);//fill existing vector of accounts
@@ -79,7 +77,5 @@ private:
     void SetProgressGUI(QString main_process, QString sub_process, int ProgressBarMaximum,int  StartValue);//setup giu due to current process
     QVector <SortedBase> CreateSortedBase(QVector <Account> vect,const QStringList &domains);
     void CreateDefaultStructure(QVector <Cheker::SortedBase> & vect,const QStringList &domains);
-    bool readResponse(QString& response, quint64 bytesAvailable);
-
 };
 #endif // CHEKER_H

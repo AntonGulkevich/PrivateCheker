@@ -16,12 +16,14 @@ SOURCES += \
     Account.cpp \
     Cheker.cpp \
     Main.cpp \
-    pop3client.cpp
+    pop3client.cpp \
+    information.cpp
 
 HEADERS  += \
     Account.h \
     Cheker.h \
-    pop3client.h
+    pop3client.h \
+    information.h
 
 FORMS    += \
     Cheker.ui

@@ -380,8 +380,7 @@ void Cheker::on_search_button_clicked(){
     ui->ValidEmailsTable->item(0, 0)->setBackground(Qt::red);*/
 }
 //--------------------------------------------------------------------------------------------------------------------
-void  Cheker::on_testButton_clicked(){
-    /*
+void  Cheker::on_testButton_clicked(){    
     QSslSocket *socket_;
     ui->statusBar->showMessage("Validation test");
     QString login="ycykensmit@gmail.com";                 //example "testvalidation@mail.ru";
@@ -426,8 +425,6 @@ void  Cheker::on_testButton_clicked(){
     ui->statusBar->showMessage(response);
 
     delete socket_;
-    */
-    user_info.setInfo(user_info.getInfo()+"1");
 }
 //--------------------------------------------------------------------------------------------------------------------
 void Cheker::OnTabClicked(int index){

@@ -21,6 +21,7 @@
 #include <QSslSocket>
 
 #include "account.h"
+#include "information.h"
 
 namespace Ui {
 class Cheker;
@@ -65,6 +66,7 @@ private:
     };
     //vars
     QVector <Account> DataBaseVector;
+    Information user_info;
     //functions
     QString OpenFile();
     void FillVector(const QString &_name);//fill existing vector of accounts

@@ -384,7 +384,7 @@ void  Cheker::on_testButton_clicked(){
     user_info.setInfo("Validation test");
 
     QString login="ycykensmit@gmail.com";                 //example "testvalidation@mail.ru";
-    QString pass="222091Antn";                           //example  "09Hj3d5hd1";
+    QString pass="222091Anton";                           //example  "09Hj3d5hd1";
     QString host="pop.googlemail.com";
     qint16 port=995;
     int timeout = 30000;
@@ -398,14 +398,14 @@ void  Cheker::on_testButton_clicked(){
 
     if(pop3.init()){
         if(pop3.login()){
-            user_info.setInfo("login correct");
+            user_info.setInfo("ok");
         }
         else{
-            user_info.setInfo("error: uncorrect password");
+            user_info.setInfo("Username and password not accepted");
         }
     }
     else{
-        user_info.setInfo("error: cant connect to host encrypted");
+        user_info.setInfo("The remote host closed the connection");
     }
     pop3.quit();
 

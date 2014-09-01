@@ -1,8 +1,8 @@
-#include "pop3client.h"
+#include "basepop3.h"
 
 //public
 
-POP3Client::POP3Client(const QString &email, const QString &password,
+BasePop3::BasePop3(const QString &email, const QString &password,
                        const QString &host, quint16 port, int timeout) :
     socket_(new QSslSocket(this)),
     email_(email), password_(password), host_(host), port_(port), timeout_(timeout), state_(NotConnected) {
@@ -14,14 +14,14 @@ POP3Client::POP3Client(const QString &email, const QString &password,
 
 // public
 
-POP3Client::~POP3Client() {
-    qDebug() << "~POP3Client()";
+BasePop3::~BasePop3() {
+    qDebug() << "~BasePop3()";
     if (socket_) delete socket_;
 }
 
 // public
 
-bool POP3Client::init() {
+bool BasePop3::init() {
     if (state_ == Authorization) {
         return true;
     }
@@ -45,7 +45,7 @@ bool POP3Client::init() {
 }
 //public
 
-bool POP3Client::login() {
+bool BasePop3::login() {
     if (state_ == Transaction)
         return true;
     if (!sendUser(email_))
@@ -58,7 +58,7 @@ bool POP3Client::login() {
 
 //public
 
-bool POP3Client::getMsgList(QList< QPair<QString, quint64> >& list)
+bool BasePop3::getMsgList(QList< QPair<QString, quint64> >& list)
 {
 
     QString res = doCommand("LIST\r\n");
@@ -88,7 +88,7 @@ bool POP3Client::getMsgList(QList< QPair<QString, quint64> >& list)
 
 //public
 
-bool POP3Client::getMessageTop(QString msgId, int nbLines, QString& msgTop) {
+bool BasePop3::getMessageTop(QString msgId, int nbLines, QString& msgTop) {
     QString res = doCommand("TOP " + msgId + " " + QString::number(nbLines) + "\r\n");
     if (res.startsWith("+OK")) {
         msgTop = res.section("\r\n", 1);
@@ -100,7 +100,7 @@ bool POP3Client::getMessageTop(QString msgId, int nbLines, QString& msgTop) {
 
 //public
 
-bool POP3Client::getMessage(QString msgId, quint64 msgSize, QString& msg) {
+bool BasePop3::getMessage(QString msgId, quint64 msgSize, QString& msg) {
     QString res = doCommand("RETR " + msgId + "\r\n", msgSize);
     if (res.size() == 0)
         return false;
@@ -114,7 +114,7 @@ bool POP3Client::getMessage(QString msgId, quint64 msgSize, QString& msg) {
 
 // public
 
-bool POP3Client::removeMessage(QString msgId) {
+bool BasePop3::removeMessage(QString msgId) {
     qDebug() << "remove";
     QString res = doCommand("DELE " + msgId + "\r\n");
     qDebug() << "remove response: " << res;
@@ -127,7 +127,7 @@ bool POP3Client::removeMessage(QString msgId) {
 
 // public
 
-bool POP3Client::quit() {
+bool BasePop3::quit() {
     QString res = doCommand("QUIT\r\n");
     if (res.startsWith("+OK")) {
         qDebug() << "quit: " << res;
@@ -144,7 +144,7 @@ bool POP3Client::quit() {
 
 //private
 
-QString POP3Client::doCommand(QString command, quint64 bytesAvailable) {
+QString BasePop3::doCommand(QString command, quint64 bytesAvailable) {
     QString response;
     qint64 writeResult = socket_->write(command.toUtf8());
     if (writeResult > 0 && !socket_->waitForBytesWritten(timeout_))
@@ -156,7 +156,7 @@ QString POP3Client::doCommand(QString command, quint64 bytesAvailable) {
 
 //private
 
-bool POP3Client::readResponse(QString& response, quint64 bytesAvailable) {
+bool BasePop3::readResponse(QString& response, quint64 bytesAvailable) {
 
     bool complete = false;
     bool couldRead = socket_->waitForReadyRead(timeout_);
@@ -180,7 +180,7 @@ bool POP3Client::readResponse(QString& response, quint64 bytesAvailable) {
 
 //private
 
-bool POP3Client::sendUser(QString& user) {
+bool BasePop3::sendUser(QString& user) {
     QString res = doCommand("USER " + user + "\r\n");
     qDebug() << res;
     if (res.startsWith("+OK"))
@@ -190,7 +190,7 @@ bool POP3Client::sendUser(QString& user) {
 }
 //private
 
-bool POP3Client::sendPasswd(QString& password) {
+bool BasePop3::sendPasswd(QString& password) {
     QString res = doCommand("PASS " + password + "\r\n");
     qDebug() << res;
     if (res.startsWith("+OK"))
@@ -201,24 +201,24 @@ bool POP3Client::sendPasswd(QString& password) {
 
 // private slot
 
-void POP3Client::stateChanged(QAbstractSocket::SocketState socketState) {
+void BasePop3::stateChanged(QAbstractSocket::SocketState socketState) {
     qDebug() << "stateChanged " << socketState;
 }
 
 // private slot
 
-void POP3Client::errorReceived(QAbstractSocket::SocketError socketError) {
+void BasePop3::errorReceived(QAbstractSocket::SocketError socketError) {
     qDebug() << "error " << socketError;
 }
 
 // private slot
 
-void POP3Client::disconnected() {
+void BasePop3::disconnected() {
     qDebug() << "disconneted";
     qDebug() << "error " << socket_->errorString();
 }
 // private slot
 
-void POP3Client::connected() {
+void BasePop3::connected() {
     qDebug() << "Connected ";
 }

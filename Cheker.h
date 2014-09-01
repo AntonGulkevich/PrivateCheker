@@ -22,6 +22,7 @@
 
 #include "account.h"
 #include "information.h"
+#include "basepop3.h"
 
 namespace Ui {
 class Cheker;

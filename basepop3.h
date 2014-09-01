@@ -1,5 +1,5 @@
-#ifndef POP3CLIENT_H
-#define POP3CLIENT_H
+#ifndef BASEPOP3_H
+#define BASEPOP3_H
 
 #include <QSslSocket>
 #include <QString>
@@ -9,12 +9,12 @@
 #include <QFile>
 #include <QFileInfo>
 
-class POP3Client : public QObject {
+class BasePop3 : public QObject {
     Q_OBJECT
 public:
-    POP3Client(const QString &email, const QString &password,
-               const QString &host, quint16 port, int timeout = 30000);
-    ~POP3Client();
+    BasePop3(const QString &email, const QString &password,
+             const QString &host, quint16 port, int timeout = 30000);
+    ~BasePop3();
 
     bool init();
     bool login();
@@ -32,7 +32,6 @@ signals:
 private:
     QSslSocket *socket_;
     bool auth_;
-
     QString email_;
     QString password_;
     QString host_;
@@ -40,7 +39,10 @@ private:
     int timeout_;
 
     enum states {
-        NotConnected, Authorization, Transaction, Update
+        NotConnected,
+        Authorization,
+        Transaction,
+        Update
     };
 
     int state_;
@@ -56,4 +58,5 @@ private slots:
     void connected();
 };
 
-#endif // POP3CLIENT_H
+
+#endif // BASEPOP3_H

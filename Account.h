@@ -10,7 +10,6 @@ private:
     QString password;
     bool valid;
 
-
 public:
     Account();
     Account(const QString &_login,const QString &_password);

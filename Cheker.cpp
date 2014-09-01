@@ -1,6 +1,6 @@
 #include "cheker.h"
 #include "ui_cheker.h"
-#include "pop3client.h"
+#include "basepop3.h"
 
 Cheker::Cheker(QWidget *parent) :
     QMainWindow(parent),
@@ -380,54 +380,35 @@ void Cheker::on_search_button_clicked(){
     ui->ValidEmailsTable->item(0, 0)->setBackground(Qt::red);*/
 }
 //--------------------------------------------------------------------------------------------------------------------
-void  Cheker::on_testButton_clicked(){
-    /*
-    QSslSocket *socket_;
-    ui->statusBar->showMessage("Validation test");
+void  Cheker::on_testButton_clicked(){    
+    user_info.setInfo("Validation test");
+
     QString login="ycykensmit@gmail.com";                 //example "testvalidation@mail.ru";
-    QString pass="222091Anton";                           //example  "09Hj3d5hd1";
+    QString pass="222091Antn";                           //example  "09Hj3d5hd1";
     QString host="pop.googlemail.com";
     qint16 port=995;
+    int timeout = 30000;
 
     if(!QSslSocket::supportsSsl()) {
-        QMessageBox::critical(0, QMessageBox::tr("Cheker"), QMessageBox::tr("I couldn't detect any SSL supporton this system."));
+        user_info.setInfo("I couldn't detect any SSL supporton this system.");
         return;
     }
 
-    socket_ = new QSslSocket(this);
+    BasePop3 pop3(login, pass, host, port,timeout);
 
-    socket_->connectToHostEncrypted(host, port);
-
-    if (!socket_->waitForConnected(100)) {
-        qDebug() << socket_->errorString();
-        delete socket_;
-        return;
+    if(pop3.init()){
+        if(pop3.login()){
+            user_info.setInfo("login correct");
+        }
+        else{
+            user_info.setInfo("error: uncorrect password");
+        }
     }
-
-    QString response;
-    quint64 bytesRead;
-    quint64 bytesAvailable;
-    socket_->waitForReadyRead(100);
-
-    bytesRead=0;
-    bytesAvailable=socket_->bytesAvailable();
-
-    qDebug() << "available: " <<bytesAvailable ;
-
-    do {
-        QByteArray all(socket_->readAll());
-        bytesRead += all.size();
-        response.append(all);
-        if (bytesRead < bytesAvailable)
-            socket_->waitForReadyRead(100);
+    else{
+        user_info.setInfo("error: cant connect to host encrypted");
     }
-    while (bytesRead < bytesAvailable);
+    pop3.quit();
 
-    ui->statusBar->showMessage(response);
-
-    delete socket_;
-    */
-    user_info.setInfo(user_info.getInfo()+"1");
 }
 //--------------------------------------------------------------------------------------------------------------------
 void Cheker::OnTabClicked(int index){

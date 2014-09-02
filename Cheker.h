@@ -74,11 +74,11 @@ private:
     int ValidationDataBase(QStringList DataBaseText);// chek data base to be "login:password" like, returns count of errors
     bool MixCheck();//cheking base for different domains existance
     int ForcedFillVector(QString _name);//trying to fill vector if there are errors in database, returns number of errors
-    bool CheckEmail(const QString &_login,const QString _password);
     void EnabledDomains(QStringList & List);//creating a list with domains
     void SetEnabledDomains();//make domain's chek boxes enabled if prototypes exist in database
     void SetProgressGUI(QString main_process, QString sub_process, int ProgressBarMaximum,int  StartValue);//setup giu due to current process
     QVector <SortedBase> CreateSortedBase(QVector <Account> vect,const QStringList &domains);
     void CreateDefaultStructure(QVector <Cheker::SortedBase> & vect,const QStringList &domains);
+    bool CheckMail(const QString &_login, const QString &_password, const QString &_host);
 };
 #endif // CHEKER_H

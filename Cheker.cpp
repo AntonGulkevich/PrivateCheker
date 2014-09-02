@@ -144,13 +144,6 @@ int Cheker::ForcedFillVector(QString _name){
 }
 
 //--------------------------------------------------------------------------------------------------------------------
-bool Cheker::CheckEmail(const QString &_login,const QString _password){
-    if(true)
-        return true;
-    else
-        return false;
-}
-//--------------------------------------------------------------------------------------------------------------------
 
 void Cheker::on_CheckButton_clicked()
 {
@@ -170,7 +163,7 @@ void Cheker::on_CheckButton_clicked()
 
     for (QVector<Cheker::SortedBase>::iterator it=AccountsToCheck.begin(); it!=AccountsToCheck.end(); ++it){
         for (QVector <Account>::iterator it2=it->accounts.begin(); it2!=it->accounts.end();++it2){
-            it2->SetValid(CheckEmail(it2->GetLogin(), it2->GetPassword()));
+            it2->SetValid(CheckMail(it2->GetLogin(), it2->GetPassword(), ));
             ui->ProgressBar->setValue(cur++);
             if (it2->GetValid()){
                 good++;
@@ -382,12 +375,21 @@ void Cheker::on_search_button_clicked(){
 //--------------------------------------------------------------------------------------------------------------------
 void  Cheker::on_testButton_clicked(){    
     user_info.setInfo("Validation test");
-
+    /* GMAIL status-OK*/
+    /*
     QString login="ycykensmit@gmail.com";                 //example "testvalidation@mail.ru";
     QString pass="222091Anton";                           //example  "09Hj3d5hd1";
     QString host="pop.googlemail.com";
     qint16 port=995;
     int timeout = 30000;
+    */
+    /*YANDEX status-in work*/
+    QString login="MissisSinister1@rambler.ru";
+    QString pass="HGuWB2JV0G";
+    QString host="pop.rambler.ru";
+    qint16 port=995;
+    int timeout = 30000;
+
 
     if(!QSslSocket::supportsSsl()) {
         user_info.setInfo("I couldn't detect any SSL supporton this system.");
@@ -418,4 +420,20 @@ void Cheker::OnTabClicked(int index){
     /*commit*/
 }
 
+//--------------------------------------------------------------------------------------------------------------------
+bool Cheker::CheckMail(const QString &login, const QString &pass, const QString &_host){
+    qint16 port=995;
+    int timeout = 30000;
+
+    BasePop3 pop3(login, pass, host, port,timeout);
+
+    if(pop3.init()){
+        if(pop3.login()){
+            //user_info.setInfo("ok");
+            return true;
+        }
+    }
+    pop3.quit();
+    return false;
+}
 //--------------------------------------------------------------------------------------------------------------------

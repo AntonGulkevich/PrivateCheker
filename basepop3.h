@@ -24,7 +24,9 @@ public:
     bool getMessage(QString msgId, quint64 msgSize, QString& msg);
     bool removeMessage(QString msgId);
     bool quit();
-
+    void SetPass(const QString &pass);
+    void SetLogin(const QString &login);
+    void abort();
 signals:
     void status(QString status);
     void status();

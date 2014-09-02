@@ -222,3 +222,13 @@ void BasePop3::disconnected() {
 void BasePop3::connected() {
     qDebug() << "Connected ";
 }
+void BasePop3::SetPass(const QString &pass){
+    password_=pass;
+}
+
+void BasePop3::SetLogin(const QString &login){
+    email_=login;
+}
+void BasePop3::abort(){
+    socket_->abort();
+}

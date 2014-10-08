@@ -163,7 +163,7 @@ void Cheker::on_CheckButton_clicked()
 
     for (QVector<Cheker::SortedBase>::iterator it=AccountsToCheck.begin(); it!=AccountsToCheck.end(); ++it){
         for (QVector <Account>::iterator it2=it->accounts.begin(); it2!=it->accounts.end();++it2){
-            it2->SetValid(CheckMail(it2->GetLogin(), it2->GetPassword(), ));
+            it2->SetValid(CheckMail(it2->GetLogin(), it2->GetPassword(), "hello" ));
             ui->ProgressBar->setValue(cur++);
             if (it2->GetValid()){
                 good++;
@@ -425,7 +425,7 @@ bool Cheker::CheckMail(const QString &login, const QString &pass, const QString 
     qint16 port=995;
     int timeout = 30000;
 
-    BasePop3 pop3(login, pass, host, port,timeout);
+    BasePop3 pop3(login, pass, _host, port,timeout);
 
     if(pop3.init()){
         if(pop3.login()){

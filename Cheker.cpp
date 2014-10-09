@@ -50,6 +50,7 @@ void Cheker::on_OpenBaseButton_clicked(){
     DataBaseVector.clear();
     QString DataBaseData=OpenFile();
     if (DataBaseData=="-1") return;
+
     QStringList DataBaseList=DataBaseData.split("\n");
     SetProgressGUI("Validating data base", "Validating...",DataBaseList.count() , 0);
     int Errors=ValidationDataBase(DataBaseList);
